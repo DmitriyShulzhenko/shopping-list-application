@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+	<head>
+		<meta charset="utf-8" />
+		<title>Apache Wicket Quickstart</title>
+		<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:regular,bold' rel='stylesheet' type='text/css' />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Stylesheet" />
+	</head>
+	<body>
+		<div id="hd">
+			<h1>Shopping List application!</h1>
+		</div>
+		<div id="bd">
+		<p>
+			<span wicket:id="listNameValue">Hello</span>
+		</p>
+	<p> Showing shopping list named: </p>
+	<select wicket:id="lists123">
+		<option>site 1</option>
+        <option>site 2</option>
+        </select>
+	
+	  <form wicket:id="shoppingItemForm">
+	    Add your comment here:
+	    <p>
+	    <input type="text" wicket:id="name"/>
+	    <input type="text" wicket:id="quanity"/>
+	    <input type="text" wicket:id="comment"/>
+	    <p>
+	    <input type="submit" value="Submit" id="formsubmit"/>
+	  </form>
+		<p/>
+	  <table>
+             <tr wicket:id="shoppingItems">
+               <td wicket:id="cells">
+                 <span wicket:id="cell"> </span>
+               </td>
+             </tr>
+           </table>
+	  <wicket:remove>
+	    <p>
+	        1/2/2004<br/>
+	        More comment text here.
+	    </p>
+	  </wicket:remove>
+		</div>
+		<div id="ft">
+			<p>
+				&copy; Dmitriy Shulzhenko 2017 RTU
+			</p>
+			<p>
+				Contact e-mail: <a href="mailto:d.shulzhenko0194@gmail.com">d.shulzhenko0194@gmail.com</a>
+			</p> 
+		</div>
+	</body>
+</html>
