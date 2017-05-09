@@ -30,8 +30,20 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.crypt.StringUtils;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 public class HomePage extends WebPage {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/** A global list of all comments from all users across all sessions */
     public static ShoppingLists lists = new ShoppingLists();
     public String listName;
@@ -78,6 +90,17 @@ public class HomePage extends WebPage {
         columns.add(new PropertyPopulator("comment"));
         
         add(new DataGridView("shoppingItems", columns, new ShoppingItemProvider(listName)));
+        
+     /*   IColumn[] columns = new IColumn[3];
+        columns[0] = new PropertyColumn(new Model("Name"), "name");
+        columns[1] = new PropertyColumn(new Model("Quanity"), "quanity");
+        columns[2] = new PropertyColumn(new Model("Comment"), "comment");
+        
+        final ShoppingItemProvider shoppingItemProvider = new ShoppingItemProvider(listName);
+         
+        DefaultDataTable table = new DefaultDataTable("datatable", columns, shoppingItemProvider, 10);
+         
+        add(table);*/
     }
     /**
      * A form that allows a user to add a comment.
