@@ -20,4 +20,27 @@ public class ShoppingLists {
 		return "ShoppingLists [shoppingLists=" + shoppingLists + "]";
 	}
 	
+	public ShoppingList getShoppingList(String listName){
+		return shoppingLists.get(listName);
+	}
+	
+	public void addShoppingList (String listName){
+		shoppingLists.put(listName, new ShoppingList());
+	}
+	
+	public void removeShoppingList (String listName){
+		shoppingLists.remove(listName);
+	}
+	
+	public void addShoppingItem (String listName, ShoppingItem item){
+		shoppingLists.get(listName).addItem(item);
+	}
+	
+	public void removeShoppingItem (String listName, ShoppingItem item){
+		shoppingLists.get(listName).removeItem(item);
+	}
+	
+	public boolean containsKey (String listName){
+		return shoppingLists.containsKey(listName);
+	}
 }

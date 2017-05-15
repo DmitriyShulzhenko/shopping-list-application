@@ -3,12 +3,15 @@ package com.dshulzhenko;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.link.Link;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +33,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.crypt.StringUtils;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.markup.html.list.PropertyListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
@@ -38,83 +43,96 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColu
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.ajax.AjaxEventBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 
 public class HomePage extends WebPage {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/** A global list of all comments from all users across all sessions */
     public static ShoppingLists lists = new ShoppingLists();
+
     public String listName;
-    /**
-     * Constructor that is invoked when page is invoked without a session.
-     */
-    public HomePage() {
-    	HashMap<String, ShoppingList> start = new HashMap<String, ShoppingList>();
-    	start.put("list1", new ShoppingList());
-    	start.put("list2", new ShoppingList());
-    	lists.setShoppingLists(start);
+    public ArrayList<String> choices = new ArrayList<String>();
+    public final IModel<String> dropdownModel = new PropertyModel<String>(this, "listName");
+    final IModel<List<String>> choicesModel = new PropertyModel<List<String>>(this,"choices");
+
+    public HomePage() {	
+    	FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
+        add(feedbackPanel);
     	
-    	//Form<?> form = new Form("form");
-        //add(form);
-        final DropDownChoice<String> lists123 = new DropDownChoice<String>("lists123", Model.of(listName),
-                new ArrayList<String>(lists.getShoppingLists().keySet())) {
-        	 @Override
-             protected CharSequence getDefaultChoice(String selectedValue) {
- // put return type as empty so that default value will be removed
-                 return " ";
-             }
+    	final ShoppingListForm shoppingListForm= new ShoppingListForm("shoppingListForm");
+    	add(shoppingListForm);
+    	shoppingListForm.setOutputMarkupId(true);     
+        
+        final ShoppingItemForm shoppingItemForm= new ShoppingItemForm("shoppingItemForm");
+    	add(shoppingItemForm);
+    	shoppingItemForm.setOutputMarkupId(true);
+            
+        // Table
+    	List <IColumn> columns = new ArrayList<IColumn>();
+        columns.add(new PropertyColumn(new Model<String>("Name"), "name"));
+        columns.add(new PropertyColumn(new Model<String>("Quanity"), "quanity"));
+        columns.add(new PropertyColumn(new Model<String>("Comment"), "comment"));
+        
+        final ShoppingItemProvider shoppingItemProvider = new ShoppingItemProvider();
+         
+        final DefaultDataTable table = new DefaultDataTable("datatable", columns, shoppingItemProvider, 10);       
+        table.setOutputMarkupPlaceholderTag(true);        
+        add(table);
+        
+        // DropDown of Shopping Lists
+        final DropDownChoice<String> shoppingLists = new DropDownChoice<String>("shoppingLists", dropdownModel,
+        		choicesModel);
+        shoppingLists.add(new AjaxFormComponentUpdatingBehavior("change") {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-        };
-        add (lists123);
-        // Add comment form
-        add(new ShoppingItemForm("shoppingItemForm"));
-        // Add commentListView of existing comments
-        /*add(new PropertyListView<ShoppingItem>("shoppingItems", shoppingList) {
-            @Override
-            public void populateItem(final ListItem<ShoppingItem> listItem) {
-                listItem.add(new Label("name"));
-                listItem.add(new Label("quanity"));
-                listItem.add(new MultiLineLabel("comment"));
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				
+				shoppingItemProvider.setShoppingList((String)dropdownModel.getObject());
+		        target.add(table);		        		
+			}
+        });
+        add (shoppingLists);
+        
+        // Button for List delete
+        Button deleteList = new Button("deleteList") {
+            /**
+			 * 
+			 */
+        		
+			private static final long serialVersionUID = 1L;
+
+			public void onSubmit() {
+				MySession.get().getShoppingLists().removeShoppingList((String)dropdownModel.getObject());
+                choices.remove((String)dropdownModel.getObject());
             }
-        }).setVersioned(false);*/
-
-        listName="list1";
-        
-        add(new Label("listNameValue",lists123.getValue()));
-        List<ICellPopulator> columns = new ArrayList<ICellPopulator>();
-        
-        columns.add(new PropertyPopulator("name"));
-        columns.add(new PropertyPopulator("quanity"));
-        columns.add(new PropertyPopulator("comment"));
-        
-        add(new DataGridView("shoppingItems", columns, new ShoppingItemProvider(listName)));
-        
-     /*   IColumn[] columns = new IColumn[3];
-        columns[0] = new PropertyColumn(new Model("Name"), "name");
-        columns[1] = new PropertyColumn(new Model("Quanity"), "quanity");
-        columns[2] = new PropertyColumn(new Model("Comment"), "comment");
-        
-        final ShoppingItemProvider shoppingItemProvider = new ShoppingItemProvider(listName);
-         
-        DefaultDataTable table = new DefaultDataTable("datatable", columns, shoppingItemProvider, 10);
-         
-        add(table);*/
+        };
+     
+        deleteList.setDefaultFormProcessing(false);
+        shoppingListForm.add(deleteList);
     }
     /**
      * A form that allows a user to add a comment.
      */
     public final class ShoppingItemForm extends Form<ValueMap> {
-        public ShoppingItemForm(final String id) {
-            // Construct form with no validation listener
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public ShoppingItemForm(final String id) {
             super(id, new CompoundPropertyModel<ValueMap>(new ValueMap()));
-            // this is just to make the unit test happy
             setMarkupId("shoppingItemForm");
-            // Add text entry widget
-            add(new TextField<String>("name").setType(String.class));
+            final FormComponent<String> name = new TextField<String>("name").setType(String.class);
+            name.setRequired(true);
+            add(name);
             add(new TextField<String>("quanity").setType(String.class));
-            // Add simple automated spam prevention measure.
             add(new TextField<String>("comment").setType(String.class));
         }
         /**
@@ -123,23 +141,44 @@ public class HomePage extends WebPage {
         @Override
         public final void onSubmit() {
             ValueMap values = getModelObject();
-            // check if the honey pot is filled
-            // Construct a copy of the edited comment
             ShoppingItem shoppingItem = new ShoppingItem();
-            // Set date of comment to add
             shoppingItem.setName((String)values.get("name"));
-            shoppingItem.setQuanity(Integer.valueOf((String) values.get("quanity")));
-            shoppingItem.setComment((String)values.get("comment"));
-           
-            lists.getShoppingLists().get(listName).getShoppingList().add(0,shoppingItem);
-            // Clear out the text component
-            values.put("text", "");
+            shoppingItem.setQuanity((String) values.get("quanity"));
+            shoppingItem.setComment((String)values.get("comment"));      
+			try {
+				MySession.get().getShoppingLists().addShoppingItem((String) dropdownModel.getObject(), shoppingItem);
+			} catch (NullPointerException e) {
+				error("You haven't choosed list!");
+			}
+            values.put("name", "");
+            values.put("quanity", "");
+            values.put("comment", "");          
+            
         }
     }
-    /**
-     * Clears the comments.
-     */
-   // public static void clear() {
-   // 	lists.clear();
-  //  }
+    public final class ShoppingListForm extends Form<ValueMap> {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public ShoppingListForm(final String id) {
+            super(id, new CompoundPropertyModel<ValueMap>(new ValueMap()));
+            setMarkupId("shoppingListForm");
+            final FormComponent<String> listName =new TextField<String>("listname").setType(String.class);
+            listName.setRequired(true);
+            listName.add(new ListNameValidator());
+            add(listName);
+        }
+        /**
+         * Show the resulting valid edit
+         */
+        @Override
+        public final void onSubmit() {
+            ValueMap values = getModelObject();
+            MySession.get().getShoppingLists().addShoppingList((String)values.get("listname"));
+            choices.add((String)values.get("listname"));
+            values.put("listname", "");
+        }
+    }
+
 }

@@ -21,4 +21,11 @@ public class ShoppingList {
 		return "ShoppingList [shoppingList=" + shoppingList + "]";
 	}	
 	
+	public void removeItem (ShoppingItem item){
+		shoppingList.remove(item);
+	}
+	
+	public void addItem (ShoppingItem item){
+		shoppingList.add(0,item);
+	}
 }

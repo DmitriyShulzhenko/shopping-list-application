@@ -2,7 +2,7 @@ package com.dshulzhenko;
 
 public class ShoppingItem {
 	private String name;
-	private int quanity;
+	private String quanity;
 	private String comment;
 	
 	public ShoppingItem() {}
@@ -19,11 +19,11 @@ public class ShoppingItem {
 		this.name = name;
 	}
 
-	public int getQuanity() {
+	public String getQuanity() {
 		return quanity;
 	}
 
-	public void setQuanity(int quanity) {
+	public void setQuanity(String quanity) {
 		this.quanity = quanity;
 	}
 

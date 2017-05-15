@@ -11,18 +11,19 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
 public class ShoppingItemProvider implements ISortableDataProvider<Object, Object> {
-	ArrayList<ShoppingItem> shoppingList;
+	ArrayList<ShoppingItem> shoppingList = new ArrayList<ShoppingItem>();
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public ShoppingItemProvider(String listName){
-		shoppingList = HomePage.lists.getShoppingLists().get(listName).getShoppingList();
+	public ShoppingItemProvider(){}
+
+	public void setShoppingList (String listName){
+		shoppingList = MySession.get().getShoppingLists().getShoppingList(listName).getShoppingList();
 	}
-
-
+	
 	public Iterator iterator(long first, long count) {
 		return shoppingList.iterator();
 	}
@@ -35,7 +36,12 @@ public class ShoppingItemProvider implements ISortableDataProvider<Object, Objec
 	@Override
 	public IModel model(final Object object) {
 		 return new AbstractReadOnlyModel<ShoppingItem>() {
-	            @Override
+	            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+				@Override
 	            public ShoppingItem getObject() {
 	                return (ShoppingItem) object;
 	            }
