@@ -17,6 +17,15 @@ public final class MySession extends WebSession {
 	private static final long serialVersionUID = 1L;
 	
 	private ShoppingLists shoppingLists = new ShoppingLists();
+	private String selectedShoppingList;
+
+	public String getSelectedShoppingList() {
+		return selectedShoppingList;
+	}
+
+	public void setSelectedShoppingList(String selectedShoppingList) {
+		this.selectedShoppingList = selectedShoppingList;
+	}
 
 	public ShoppingLists getShoppingLists() {
 		return shoppingLists;

@@ -58,6 +58,10 @@ public class HomePage extends WebPage {
     public ArrayList<String> choices = new ArrayList<String>();
     public final IModel<String> dropdownModel = new PropertyModel<String>(this, "listName");
     final IModel<List<String>> choicesModel = new PropertyModel<List<String>>(this,"choices");
+    
+    public String getSelectedList() {
+    	return (String) dropdownModel.getObject();
+    }
 
     public HomePage() {	
     	FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
@@ -73,6 +77,19 @@ public class HomePage extends WebPage {
             
         // Table
     	List <IColumn> columns = new ArrayList<IColumn>();
+    	columns.add(new AbstractColumn<ShoppingItem, String>(new Model<>("Actions"))
+         {
+             /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void populateItem(Item<ICellPopulator<ShoppingItem>> cellItem, String componentId, IModel<ShoppingItem> model) {
+				cellItem.add(new DeletePanel(componentId, model));
+				
+			}
+         });
         columns.add(new PropertyColumn(new Model<String>("Name"), "name"));
         columns.add(new PropertyColumn(new Model<String>("Quanity"), "quanity"));
         columns.add(new PropertyColumn(new Model<String>("Comment"), "comment"));
@@ -93,9 +110,9 @@ public class HomePage extends WebPage {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
+			protected void onUpdate(AjaxRequestTarget target) {				
 				shoppingItemProvider.setShoppingList((String)dropdownModel.getObject());
+				MySession.get().setSelectedShoppingList((String)dropdownModel.getObject());
 		        target.add(table);		        		
 			}
         });
@@ -112,6 +129,12 @@ public class HomePage extends WebPage {
 			public void onSubmit() {
 				MySession.get().getShoppingLists().removeShoppingList((String)dropdownModel.getObject());
                 choices.remove((String)dropdownModel.getObject());
+                /*
+                 * SET SELECTED VALUE
+                shoppingItemProvider.setShoppingList((String)dropdownModel.getObject());
+				MySession.get().setSelectedShoppingList((String)dropdownModel.getObject());
+		        add(table);
+		        */
             }
         };
      
