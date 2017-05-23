@@ -19,6 +19,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.DataGridView;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.PropertyPopulator;
@@ -67,6 +75,10 @@ public class HomePage extends WebPage {
     	FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         add(feedbackPanel);
     	
+        final SynchronizeForm synchronizeForm= new SynchronizeForm("synchronizeForm");
+    	add(synchronizeForm);
+    	synchronizeForm.setOutputMarkupId(true); 
+        
     	final ShoppingListForm shoppingListForm= new ShoppingListForm("shoppingListForm");
     	add(shoppingListForm);
     	shoppingListForm.setOutputMarkupId(true);     
@@ -158,9 +170,7 @@ public class HomePage extends WebPage {
             add(new TextField<String>("quanity").setType(String.class));
             add(new TextField<String>("comment").setType(String.class));
         }
-        /**
-         * Show the resulting valid edit
-         */
+
         @Override
         public final void onSubmit() {
             ValueMap values = getModelObject();
@@ -192,15 +202,43 @@ public class HomePage extends WebPage {
             listName.add(new ListNameValidator());
             add(listName);
         }
-        /**
-         * Show the resulting valid edit
-         */
+
         @Override
         public final void onSubmit() {
             ValueMap values = getModelObject();
             MySession.get().getShoppingLists().addShoppingList((String)values.get("listname"));
             choices.add((String)values.get("listname"));
             values.put("listname", "");
+        }
+    }
+    public final class SynchronizeForm extends Form<ValueMap> {
+        /**
+		 * 
+		 */
+    	private WebTarget webTarget;
+    	private Client client;
+		private static final long serialVersionUID = 1L;
+		public SynchronizeForm(final String id) {
+            super(id, new CompoundPropertyModel<ValueMap>(new ValueMap()));
+            setMarkupId("synchronizeForm");
+            client = ClientBuilder.newClient();
+            webTarget = client.target("http://example.com/rest");
+
+        }
+
+        @Override
+        public final void onSubmit() {
+        	WebTarget resourceWebTarget = webTarget.path("resource");
+        	//GET
+        	Invocation.Builder invocationBuilder =
+        			resourceWebTarget.request(MediaType.TEXT_PLAIN_TYPE);
+        	invocationBuilder.header("some-header", "true");
+        	Response response = invocationBuilder.get();
+        	//POST
+        	Response postResponse =
+        	resourceWebTarget.request(MediaType.TEXT_PLAIN_TYPE)
+        	.post(Entity.entity("A string entity to be POSTed", MediaType.TEXT_PLAIN_TYPE));
+        	
         }
     }
 
