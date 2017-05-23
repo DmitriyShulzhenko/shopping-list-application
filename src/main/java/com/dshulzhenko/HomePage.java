@@ -125,7 +125,7 @@ public class HomePage extends WebPage {
 			protected void onUpdate(AjaxRequestTarget target) {				
 				shoppingItemProvider.setShoppingList((String)dropdownModel.getObject());
 				MySession.get().setSelectedShoppingList((String)dropdownModel.getObject());
-		        target.add(table);		        		
+		        target.add(table);		
 			}
         });
         add (shoppingLists);
@@ -174,10 +174,12 @@ public class HomePage extends WebPage {
         @Override
         public final void onSubmit() {
             ValueMap values = getModelObject();
-            ShoppingItem shoppingItem = new ShoppingItem();
-            shoppingItem.setName((String)values.get("name"));
-            shoppingItem.setQuanity((String) values.get("quanity"));
-            shoppingItem.setComment((String)values.get("comment"));      
+			ShoppingItem shoppingItem = ShoppingItem.builder()
+					.name((String) values.get("name"))
+					.quanity((String) values.get("quanity"))
+					.comment((String) values.get("comment"))
+					.build();
+			
 			try {
 				MySession.get().getShoppingLists().addShoppingItem((String) dropdownModel.getObject(), shoppingItem);
 			} catch (NullPointerException e) {
@@ -211,24 +213,29 @@ public class HomePage extends WebPage {
             values.put("listname", "");
         }
     }
-    public final class SynchronizeForm extends Form<ValueMap> {
+    public static final class SynchronizeForm extends Form<ValueMap> {
         /**
 		 * 
 		 */
-    	private WebTarget webTarget;
-    	private Client client;
+       	private static Client client;
 		private static final long serialVersionUID = 1L;
+		
+		static {
+			client = ClientBuilder.newClient();
+		}
+		
 		public SynchronizeForm(final String id) {
             super(id, new CompoundPropertyModel<ValueMap>(new ValueMap()));
             setMarkupId("synchronizeForm");           
             
-            client = ClientBuilder.newClient();
-            webTarget = client.target("http://example.com/rest");
+            
+            
 
         }
 
         @Override
         public final void onSubmit() {
+        	WebTarget webTarget = client.target("http://example.com/rest");
         	WebTarget resourceWebTarget = webTarget.path("resource");
         	//GET
         	Invocation.Builder invocationBuilder =
@@ -242,5 +249,10 @@ public class HomePage extends WebPage {
         	
         }
     }
+    // TODO
+    // remove ShoppingList
+    // Builder
+    // null value in dropdown
+    // hide table if null
 
 }

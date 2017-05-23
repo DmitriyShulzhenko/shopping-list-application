@@ -1,13 +1,14 @@
 package com.dshulzhenko;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ShoppingLists {
-	private HashMap<String,ShoppingList> shoppingLists = new HashMap<String,ShoppingList>();
+	private Map<String,ShoppingList> shoppingLists = new HashMap<String,ShoppingList>();
 	
 	public ShoppingLists() {}
 
-	public HashMap<String, ShoppingList> getShoppingLists() {
+	public Map<String, ShoppingList> getShoppingLists() {
 		return shoppingLists;
 	}
 
