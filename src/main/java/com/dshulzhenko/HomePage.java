@@ -220,7 +220,8 @@ public class HomePage extends WebPage {
 		private static final long serialVersionUID = 1L;
 		public SynchronizeForm(final String id) {
             super(id, new CompoundPropertyModel<ValueMap>(new ValueMap()));
-            setMarkupId("synchronizeForm");
+            setMarkupId("synchronizeForm");           
+            
             client = ClientBuilder.newClient();
             webTarget = client.target("http://example.com/rest");
 
