@@ -21,7 +21,11 @@ public class ShoppingItemProvider implements ISortableDataProvider<Object, Objec
 	public ShoppingItemProvider(){}
 
 	public void setShoppingList (String listName){
-		shoppingList = MySession.get().getShoppingLists().getShoppingList(listName).getShoppingList();
+		if (listName == null){
+			shoppingList = new ArrayList<ShoppingItem>();
+		} else {
+		shoppingList = MySession.get().getShoppingLists().getShoppingList(listName);
+		}
 	}
 	
 	public Iterator iterator(long first, long count) {

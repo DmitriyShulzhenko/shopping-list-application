@@ -1,18 +1,19 @@
 package com.dshulzhenko;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ShoppingLists {
-	private Map<String,ShoppingList> shoppingLists = new HashMap<String,ShoppingList>();
+	private Map<String,ArrayList<ShoppingItem>> shoppingLists = new HashMap<String,ArrayList<ShoppingItem>>();
 	
 	public ShoppingLists() {}
 
-	public Map<String, ShoppingList> getShoppingLists() {
+	public Map<String, ArrayList<ShoppingItem>> getShoppingLists() {
 		return shoppingLists;
 	}
 
-	public void setShoppingLists(HashMap<String, ShoppingList> shoppingLists) {
+	public void setShoppingLists(HashMap<String, ArrayList<ShoppingItem>> shoppingLists) {
 		this.shoppingLists = shoppingLists;
 	}
 
@@ -21,12 +22,12 @@ public class ShoppingLists {
 		return "ShoppingLists [shoppingLists=" + shoppingLists + "]";
 	}
 	
-	public ShoppingList getShoppingList(String listName){
+	public ArrayList<ShoppingItem> getShoppingList(String listName){
 		return shoppingLists.get(listName);
 	}
 	
 	public void addShoppingList (String listName){
-		shoppingLists.put(listName, new ShoppingList());
+		shoppingLists.put(listName, new ArrayList<ShoppingItem>());
 	}
 	
 	public void removeShoppingList (String listName){
@@ -34,11 +35,11 @@ public class ShoppingLists {
 	}
 	
 	public void addShoppingItem (String listName, ShoppingItem item){
-		shoppingLists.get(listName).addItem(item);
+		shoppingLists.get(listName).add(item);
 	}
 	
 	public void removeShoppingItem (String listName, ShoppingItem item){
-		shoppingLists.get(listName).removeItem(item);
+		shoppingLists.get(listName).remove(item);
 	}
 	
 	public boolean containsKey (String listName){

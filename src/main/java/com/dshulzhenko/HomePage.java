@@ -67,25 +67,23 @@ public class HomePage extends WebPage {
     public final IModel<String> dropdownModel = new PropertyModel<String>(this, "listName");
     final IModel<List<String>> choicesModel = new PropertyModel<List<String>>(this,"choices");
     
-    public String getSelectedList() {
-    	return (String) dropdownModel.getObject();
-    }
-
     public HomePage() {	
     	FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         add(feedbackPanel);
-    	
+
         final SynchronizeForm synchronizeForm= new SynchronizeForm("synchronizeForm");
     	add(synchronizeForm);
     	synchronizeForm.setOutputMarkupId(true); 
         
     	final ShoppingListForm shoppingListForm= new ShoppingListForm("shoppingListForm");
     	add(shoppingListForm);
-    	shoppingListForm.setOutputMarkupId(true);     
-        
+    	shoppingListForm.setOutputMarkupId(true);    
+    	
         final ShoppingItemForm shoppingItemForm= new ShoppingItemForm("shoppingItemForm");
     	add(shoppingItemForm);
-    	shoppingItemForm.setOutputMarkupId(true);
+    	shoppingItemForm.setOutputMarkupPlaceholderTag(true);
+    	shoppingItemForm.setVisibilityAllowed(true);
+    	shoppingItemForm.setVisible(false);
             
         // Table
     	List <IColumn> columns = new ArrayList<IColumn>();
@@ -111,10 +109,13 @@ public class HomePage extends WebPage {
         final DefaultDataTable table = new DefaultDataTable("datatable", columns, shoppingItemProvider, 10);       
         table.setOutputMarkupPlaceholderTag(true);        
         add(table);
+        table.setVisible(false);
         
         // DropDown of Shopping Lists
         final DropDownChoice<String> shoppingLists = new DropDownChoice<String>("shoppingLists", dropdownModel,
         		choicesModel);
+        shoppingLists.setNullValid(true);
+        
         shoppingLists.add(new AjaxFormComponentUpdatingBehavior("change") {
 			/**
 			 * 
@@ -123,9 +124,17 @@ public class HomePage extends WebPage {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {				
-				shoppingItemProvider.setShoppingList((String)dropdownModel.getObject());
-				MySession.get().setSelectedShoppingList((String)dropdownModel.getObject());
-		        target.add(table);		
+				shoppingItemProvider.setShoppingList(listName);
+				MySession.get().setSelectedShoppingList(listName);		        	
+		        if (listName == null){
+		        	table.setVisible(false);
+		        	shoppingItemForm.setVisible(false);
+		        } else {
+			        table.setVisible(true);	
+			        shoppingItemForm.setVisible(true);
+		        }
+		        target.add(table);
+		        target.add(shoppingItemForm);
 			}
         });
         add (shoppingLists);
@@ -139,8 +148,12 @@ public class HomePage extends WebPage {
 			private static final long serialVersionUID = 1L;
 
 			public void onSubmit() {
-				MySession.get().getShoppingLists().removeShoppingList((String)dropdownModel.getObject());
-                choices.remove((String)dropdownModel.getObject());
+				MySession.get().getShoppingLists().removeShoppingList(listName);
+                choices.remove(listName);
+                listName=null;
+                shoppingItemProvider.setShoppingList(listName);
+                table.setVisible(false);
+                shoppingItemForm.setVisible(false);
                 /*
                  * SET SELECTED VALUE
                 shoppingItemProvider.setShoppingList((String)dropdownModel.getObject());
@@ -152,6 +165,7 @@ public class HomePage extends WebPage {
      
         deleteList.setDefaultFormProcessing(false);
         shoppingListForm.add(deleteList);
+               
     }
     /**
      * A form that allows a user to add a comment.
@@ -181,7 +195,7 @@ public class HomePage extends WebPage {
 					.build();
 			
 			try {
-				MySession.get().getShoppingLists().addShoppingItem((String) dropdownModel.getObject(), shoppingItem);
+				MySession.get().getShoppingLists().addShoppingItem(listName, shoppingItem);
 			} catch (NullPointerException e) {
 				error("You haven't choosed list!");
 			}
@@ -249,10 +263,5 @@ public class HomePage extends WebPage {
         	
         }
     }
-    // TODO
-    // remove ShoppingList
-    // Builder
-    // null value in dropdown
-    // hide table if null
 
 }
