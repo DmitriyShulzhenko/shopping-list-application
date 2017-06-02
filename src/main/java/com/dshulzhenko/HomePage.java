@@ -63,6 +63,8 @@ public class HomePage extends WebPage {
     public static ShoppingLists lists = new ShoppingLists();
 
     public String listName;
+    public String enteredListName;
+    public final IModel<String> enteredListNameModel = new PropertyModel<String>(this, "enteredListName");
     public ArrayList<String> choices = new ArrayList<String>();
     public final IModel<String> dropdownModel = new PropertyModel<String>(this, "listName");
     final IModel<List<String>> choicesModel = new PropertyModel<List<String>>(this,"choices");
@@ -74,11 +76,11 @@ public class HomePage extends WebPage {
         final SynchronizeForm synchronizeForm= new SynchronizeForm("synchronizeForm");
     	add(synchronizeForm);
     	synchronizeForm.setOutputMarkupId(true); 
-        
+
     	final ShoppingListForm shoppingListForm= new ShoppingListForm("shoppingListForm");
     	add(shoppingListForm);
     	shoppingListForm.setOutputMarkupId(true);    
-    	
+
         final ShoppingItemForm shoppingItemForm= new ShoppingItemForm("shoppingItemForm");
     	add(shoppingItemForm);
     	shoppingItemForm.setOutputMarkupPlaceholderTag(true);
@@ -143,8 +145,7 @@ public class HomePage extends WebPage {
         Button deleteList = new Button("deleteList") {
             /**
 			 * 
-			 */
-        		
+			 */		
 			private static final long serialVersionUID = 1L;
 
 			public void onSubmit() {
@@ -154,17 +155,39 @@ public class HomePage extends WebPage {
                 shoppingItemProvider.setShoppingList(listName);
                 table.setVisible(false);
                 shoppingItemForm.setVisible(false);
-                /*
-                 * SET SELECTED VALUE
-                shoppingItemProvider.setShoppingList((String)dropdownModel.getObject());
-				MySession.get().setSelectedShoppingList((String)dropdownModel.getObject());
-		        add(table);
-		        */
             }
         };
      
         deleteList.setDefaultFormProcessing(false);
         shoppingListForm.add(deleteList);
+        */
+        final TextField<String> listNameText = new TextField<String>("listname",
+        		Model.of(""));
+        listNameText.setRequired(true);
+        listNameText.add(new ListNameValidator());
+        add(listNameText);
+        
+        final Button deleteListButton = new Button("deletelistbutton");
+        deleteListButton.add(new AjaxEventBehavior("click") {
+            @Override
+            protected void onEvent(final AjaxRequestTarget target) {
+                MySession.get().getShoppingLists().addShoppingList(enteredListName);
+                choices.add(enteredListName);
+            }
+        });
+        
+        final Button addListButton = new Button("addlistbutton");
+        addListButton.add(new AjaxEventBehavior("click") {
+            @Override
+            protected void onEvent(final AjaxRequestTarget target) {
+            	System.out.println(listNameText.getModelObject());
+            	MySession.get().getShoppingLists().addShoppingList(listNameText.getModelObject());
+                choices.add(listNameText.getModelObject());
+            }
+        });
+        add(listNameText);
+        add(deleteListButton);
+        add(addListButton);     
                
     }
     /**
@@ -241,10 +264,6 @@ public class HomePage extends WebPage {
 		public SynchronizeForm(final String id) {
             super(id, new CompoundPropertyModel<ValueMap>(new ValueMap()));
             setMarkupId("synchronizeForm");           
-            
-            
-            
-
         }
 
         @Override
