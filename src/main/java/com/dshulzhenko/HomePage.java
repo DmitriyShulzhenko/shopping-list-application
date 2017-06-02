@@ -161,35 +161,7 @@ public class HomePage extends WebPage {
      
         deleteList.setDefaultFormProcessing(false);
         shoppingListForm.add(deleteList);
-
-        final TextField<String> listNameText = new TextField<String>("listname",
-        		Model.of(""));
-        listNameText.setRequired(true);
-        listNameText.add(new ListNameValidator());
-        add(listNameText);
-        
-        final Button deleteListButton = new Button("deletelistbutton");
-        deleteListButton.add(new AjaxEventBehavior("click") {
-            @Override
-            protected void onEvent(final AjaxRequestTarget target) {
-                MySession.get().getShoppingLists().addShoppingList(enteredListName);
-                choices.add(enteredListName);
-            }
-        });
-        
-        final Button addListButton = new Button("addlistbutton");
-        addListButton.add(new AjaxEventBehavior("click") {
-            @Override
-            protected void onEvent(final AjaxRequestTarget target) {
-            	System.out.println(listNameText.getModelObject());
-            	MySession.get().getShoppingLists().addShoppingList(listNameText.getModelObject());
-                choices.add(listNameText.getModelObject());
-            }
-        });
-        add(listNameText);
-        add(deleteListButton);
-        add(addListButton);     
-               
+              
     }
     /**
      * A form that allows a user to add a comment.
