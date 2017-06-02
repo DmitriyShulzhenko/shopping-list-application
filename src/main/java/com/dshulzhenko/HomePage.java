@@ -142,6 +142,7 @@ public class HomePage extends WebPage {
         add (shoppingLists);
         
         // Button for List delete
+
         Button deleteList = new Button("deleteList") {
             /**
 			 * 
@@ -160,7 +161,7 @@ public class HomePage extends WebPage {
      
         deleteList.setDefaultFormProcessing(false);
         shoppingListForm.add(deleteList);
-        */
+
         final TextField<String> listNameText = new TextField<String>("listname",
         		Model.of(""));
         listNameText.setRequired(true);
