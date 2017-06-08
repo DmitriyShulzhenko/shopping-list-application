@@ -11,46 +11,50 @@
 			<h1>Shopping List application!</h1>
 		</div>
 		<div id="bd">
-		<p>
-			<span wicket:id="listNameValue">Hello</span>
-		</p>
-	<p> Showing shopping list named: </p>
-	<select wicket:id="lists123">
-		<option>site 1</option>
-        <option>site 2</option>
-        </select>
-	
-	  <form wicket:id="shoppingItemForm">
-	    Add your comment here:
-	    <p>
-	    <input type="text" wicket:id="name"/>
-	    <input type="text" wicket:id="quanity"/>
-	    <input type="text" wicket:id="comment"/>
-	    <p>
-	    <input type="submit" value="Submit" id="formsubmit"/>
-	  </form>
-		<p/>
-	  <table>
-             <tr wicket:id="shoppingItems">
-               <td wicket:id="cells">
-                 <span wicket:id="cell"> </span>
-               </td>
-             </tr>
-           </table>
-	  <wicket:remove>
-	    <p>
-	        1/2/2004<br/>
-	        More comment text here.
-	    </p>
-	  </wicket:remove>
+			<span wicket:id="feedback">feedbackmessages will be put here</span>
+			<table>
+				<tr>
+					<td width=50%>
+						<form wicket:id="shoppingListForm">
+					    	Add new list here:
+					    	<p>
+						    <input type="text" wicket:id="listname"/>
+						    <p>
+			    	        <input type="submit" value="Add list" id="formsubmit"/>
+						    <input wicket:id="deleteList" type="submit" value="Delete List" />
+						</form>	    				
+				    </td>
+				    <td>
+				    	Showing shopping list named:
+				    	<p>
+				    	<select wicket:id="shoppingLists">
+							<option>site 1</option>
+			        		<option>site 2</option>
+			        	</select>
+			        	<p>
+			        
+			        </td>
+		        </tr>
+	        </table>
+	        <form wicket:id="synchronizeForm">
+	        	<input type="submit" value="Synchronize lists" id="formsubmit"/>	
+	        </form>
+	        <table wicket:id="datatable"></table>
+	        <p>
+			<form wicket:id="shoppingItemForm">
+			    Add new item here:
+			    <p>
+			    <input type="text" wicket:id="name" placeholder="Name"/>
+			    <input type="text" wicket:id="quanity" placeholder="Quanity"/>
+			    <input type="text" wicket:id="comment" placeholder="Comment"/>
+			    <p>
+			    <input type="submit" value="Add new Item" id="formsubmit"/>
+		   	</form>							    
 		</div>
 		<div id="ft">
-			<p>
 				&copy; Dmitriy Shulzhenko 2017 RTU
-			</p>
-			<p>
 				Contact e-mail: <a href="mailto:d.shulzhenko0194@gmail.com">d.shulzhenko0194@gmail.com</a>
-			</p> 
 		</div>
+		
 	</body>
 </html>

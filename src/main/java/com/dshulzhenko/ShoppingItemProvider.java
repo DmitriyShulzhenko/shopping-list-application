@@ -5,25 +5,28 @@ import java.util.Iterator;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortState;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
-public class ShoppingItemProvider implements ISortableDataProvider<Object, Object> {
-	ArrayList<ShoppingItem> shoppingList;
+public class ShoppingItemProvider implements ISortableDataProvider<ShoppingItem, Object> {
+	ArrayList<ShoppingItem> shoppingList = new ArrayList<ShoppingItem>();
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public ShoppingItemProvider(String listName){
-		shoppingList = HomePage.lists.getShoppingLists().get(listName).getShoppingList();
+	public ShoppingItemProvider(){}
+
+	public void setShoppingList (String listName){
+		if (listName == null){
+			shoppingList = new ArrayList<ShoppingItem>();
+		} else {
+		shoppingList = MySession.get().getShoppingLists().getShoppingList(listName);
+		}
 	}
-
-
-	public Iterator iterator(long first, long count) {
+	
+	public Iterator<ShoppingItem> iterator(long first, long count) {
 		return shoppingList.iterator();
 	}
 
@@ -33,13 +36,18 @@ public class ShoppingItemProvider implements ISortableDataProvider<Object, Objec
 	}
 
 	@Override
-	public IModel model(final Object object) {
-		 return new AbstractReadOnlyModel<ShoppingItem>() {
-	            @Override
-	            public ShoppingItem getObject() {
-	                return (ShoppingItem) object;
-	            }
-	     };
+	public IModel<ShoppingItem> model(final ShoppingItem shoppingItem) {
+		return new AbstractReadOnlyModel<ShoppingItem>() {
+            /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+			@Override
+            public ShoppingItem getObject() {
+                return shoppingItem;
+            }
+     };
 	}
 
 
@@ -50,7 +58,7 @@ public class ShoppingItemProvider implements ISortableDataProvider<Object, Objec
 
 
 	@Override
-	public ISortState getSortState() {
+	public ISortState<Object> getSortState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
