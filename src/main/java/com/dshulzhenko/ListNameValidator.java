@@ -13,9 +13,8 @@ public class ListNameValidator implements IValidator<String>{
 
 	@Override
 	public void validate(IValidatable<String> validatable) {
-		// TODO Auto-generated method stub
 		final String listName = validatable.getValue();
-		if (HomePage.lists.containsKey(listName)){
+		if (MySession.get().getShoppingLists().containsKey(listName)){
 			validatable.error(new ValidationError().setMessage("List name is already taken!"));
 		}
 	}

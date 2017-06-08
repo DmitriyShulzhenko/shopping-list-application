@@ -1,22 +1,14 @@
 package com.dshulzhenko;
 
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
+
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.link.Link;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.client.Client;
@@ -27,31 +19,18 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.DataGridView;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.PropertyPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.util.crypt.StringUtils;
 import org.apache.wicket.util.value.ValueMap;
-import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 
@@ -60,14 +39,11 @@ public class HomePage extends WebPage {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-    public static ShoppingLists lists = new ShoppingLists();
 
-    public String listName;
-    public String enteredListName;
-    public final IModel<String> enteredListNameModel = new PropertyModel<String>(this, "enteredListName");
-    public ArrayList<String> choices = new ArrayList<String>();
-    public final IModel<String> dropdownModel = new PropertyModel<String>(this, "listName");
-    final IModel<List<String>> choicesModel = new PropertyModel<List<String>>(this,"choices");
+	private String listName;
+    private ArrayList<String> choices = new ArrayList<String>();
+    private final IModel<String> dropdownModel = new PropertyModel<String>(this, "listName");
+    private final IModel<List<String>> choicesModel = new PropertyModel<List<String>>(this,"choices");
     
     public HomePage() {	
     	FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
@@ -84,12 +60,11 @@ public class HomePage extends WebPage {
         final ShoppingItemForm shoppingItemForm= new ShoppingItemForm("shoppingItemForm");
     	add(shoppingItemForm);
     	shoppingItemForm.setOutputMarkupPlaceholderTag(true);
-    	shoppingItemForm.setVisibilityAllowed(true);
     	shoppingItemForm.setVisible(false);
             
         // Table
     	List <IColumn> columns = new ArrayList<IColumn>();
-    	columns.add(new AbstractColumn<ShoppingItem, String>(new Model<>("Actions"))
+    	columns.add(new AbstractColumn<ShoppingItem, Object>(new Model<>("Actions"))
          {
              /**
 			 * 
